@@ -39,12 +39,17 @@ Copy `config/default.json5` to `config/local.json5` and set the host and access 
 
 ## running
 
+Start the server
 ```
 pm2 start
 ```
 
-## survive reboot
+Tail logs
+```
+pm2 logs 0
+```
 
+Survive reboot
 ```
 pm2 save
 ```
