@@ -10,6 +10,7 @@ Start with a fresh Raspbian image, enable SSH, add your SSH keys to the `pi` acc
 
 Install [node-pi-zero](https://github.com/sdesalas/node-pi-zero)
 
+Install PM2
 ```
 npm install -g pm2
 ```
