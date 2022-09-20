@@ -6,45 +6,85 @@ const keyboard = new InputEvent.Keyboard(input);
 
 console.log('zerokey started');
 
-keyboard.on('keypress', (e) => {
+let storedAccessToken = null;
+
+const getAccessToken = async () => {
+    const now = Math.floor(Date.now() / 1000);
+
+    if (storedAccessToken == null || storedAccessToken.expires >= now) {
+        
+        const response = await rp({
+            uri: "https://api.sonos.com/login/v3/oauth/access",
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Authorization": "Basic " + Buffer.from(config.sonos.client_id + ':' + config.sonos.client_secret).toString('base64')
+            },
+            form: {
+                grant_type: "refresh_token",
+                refresh_token: config.sonos.refresh_token,
+            }
+        });
+
+        if (response) {
+            const body = JSON.parse(response);
+
+            storedAccessToken = body;
+            storedAccessToken.expires = now + storedAccessToken.expires;
+
+            return storedAccessToken.access_token;
+        }
+
+    } else {
+
+        return storedAccessToken.access_token;
+
+    }
+}
+
+keyboard.on('keypress', async (e) => {
+
+    let accessToken = null;
+    let response = null;
+
     if (e.value === 1) {
+
         switch (e.code) {
-            case 71:
-                console.log('turn on lights');
-                rp(`http://${config.hubitat.host}/apps/api/88/devices/7/setLevel/100?access_token=${config.hubitat.access_token}`);
+            case 2:
+
+                console.log('switch sonos input to record player');
+
+                accessToken = await getAccessToken();
+                response = await rp({
+                    uri: "https://api.ws.sonos.com/control/api/v1/groups/RINCON_48A6B8033D6501400:2733352432/playback/lineIn",
+                    method: "POST",
+                    json: true,
+                    body: {
+                        "deviceId": "RINCON_48A6B8214BA201400"
+                    },
+                    headers: {
+                        "Authorization": "Bearer " + accessToken,
+                    }
+                });
+                console.log(response);
                 break;
-            case 72:
-                console.log('set lights to 25%');
-                rp(`http://${config.hubitat.host}/apps/api/88/devices/7/setLevel/25?access_token=${config.hubitat.access_token}`);
-                break;
-            case 73:
-                console.log('turn off lights');
-                rp(`http://${config.hubitat.host}/apps/api/88/devices/7/off?access_token=${config.hubitat.access_token}`);
-                break;
-            case 75:
-                console.log('open blinds');
-                rp(`http://${config.hubitat.host}/apps/api/88/devices/8/open?access_token=${config.hubitat.access_token}`);
-                break;
-            case 76:
-                console.log('open blinds to 50%');
-                rp(`http://${config.hubitat.host}/apps/api/88/devices/8/setLevel/50?access_token=${config.hubitat.access_token}`);
-                break;
-            case 77:
-                console.log('close blinds');
-                rp(`http://${config.hubitat.host}/apps/api/88/devices/8/close?access_token=${config.hubitat.access_token}`);
-                break;
-            case 79:
-                console.log('7');
-                break;
-            case 80:
-                console.log('8');
-                break;
-            case 81:
-                console.log('9');
-                break;
-            case 82:
-                console.log('0');
+
+            case 3:
+                console.log('switch sonos input to TV');                
+
+                accessToken = await getAccessToken();
+                response = await rp({
+                    uri: "https://api.ws.sonos.com/control/api/v1/players/RINCON_48A6B8033D6501400/homeTheater",
+                    method: "POST",
+                    headers: {
+                        "Authorization": "Bearer " + accessToken,
+                        "Content-Type": "application/json"
+                    },
+                    body: "{}",
+                });
+                console.log(response);
                 break;
         }
+
     }
 });
