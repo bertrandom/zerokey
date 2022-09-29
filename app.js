@@ -61,6 +61,10 @@ const switchToRecordPlayer = async () => {
 
     if (response.statusCode == 200) {
         console.log('Successfully switched input to record player.');
+    } else if (response.statusCode == 401) {
+        console.error('Invalid access token.');
+        storedAccessToken = null;
+        return;
     }
 
     response = await rp({
@@ -78,6 +82,10 @@ const switchToRecordPlayer = async () => {
 
     if (response.statusCode == 200) {
         console.log('Successfully started playing record player.');
+    } else if (response.statusCode == 401) {
+        console.error('Invalid access token.');
+        storedAccessToken = null;
+        return;
     }
 
     response = await rp({
@@ -96,6 +104,10 @@ const switchToRecordPlayer = async () => {
 
     if (response.statusCode == 200) {
         console.log('Setting volume to 55.');
+    } else if (response.statusCode == 401) {
+        console.error('Invalid access token.');
+        storedAccessToken = null;
+        return;
     }
 
 }
@@ -117,6 +129,10 @@ const switchToTV = async () => {
 
     if (response.statusCode == 200) {
         console.log('Successfully switched input to TV.');
+    } else if (response.statusCode == 401) {
+        console.error('Invalid access token.');
+        storedAccessToken = null;
+        return;
     }
 
     response = await rp({
@@ -135,7 +151,11 @@ const switchToTV = async () => {
 
     if (response.statusCode == 200) {
         console.log('Setting volume to 50.');
-    }    
+    } else if (response.statusCode == 401) {
+        console.error('Invalid access token.');
+        storedAccessToken = null;
+        return;
+    }
 
 }
 
