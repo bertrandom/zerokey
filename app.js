@@ -11,7 +11,7 @@ let storedAccessToken = null;
 const getAccessToken = async () => {
     const now = Math.floor(Date.now() / 1000);
 
-    if (storedAccessToken == null || storedAccessToken.expires >= now) {
+    if (storedAccessToken == null || storedAccessToken.expires <= now) {
         
         const response = await rp({
             uri: "https://api.sonos.com/login/v3/oauth/access",
@@ -80,6 +80,24 @@ const switchToRecordPlayer = async () => {
         console.log('Successfully started playing record player.');
     }
 
+    response = await rp({
+        uri: "https://api.ws.sonos.com/control/api/v1/groups/RINCON_48A6B8033D6501400:2733352432/groupVolume",
+        method: "POST",
+        json: true,
+        body: {
+            "volume": 55
+        },
+        headers: {
+            "Authorization": "Bearer " + accessToken,
+        },
+        resolveWithFullResponse: true
+    });
+
+
+    if (response.statusCode == 200) {
+        console.log('Setting volume to 55.');
+    }
+
 }
 
 const switchToTV = async () => {
@@ -100,6 +118,24 @@ const switchToTV = async () => {
     if (response.statusCode == 200) {
         console.log('Successfully switched input to TV.');
     }
+
+    response = await rp({
+        uri: "https://api.ws.sonos.com/control/api/v1/groups/RINCON_48A6B8033D6501400:2733352432/groupVolume",
+        method: "POST",
+        json: true,
+        body: {
+            "volume": 50
+        },
+        headers: {
+            "Authorization": "Bearer " + accessToken,
+        },
+        resolveWithFullResponse: true
+    });
+
+
+    if (response.statusCode == 200) {
+        console.log('Setting volume to 50.');
+    }    
 
 }
 
