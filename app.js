@@ -4,7 +4,17 @@ const config = require('config');
 const input = new InputEvent('/dev/input/event0');
 const keyboard = new InputEvent.Keyboard(input);
 
+let nixieNumber = 0;
+
 console.log('zerokey started');
+
+rp({
+    method: 'GET',
+    uri: `http://nixie.smittn.com/number`,
+    json: true,
+}).then((body) => {
+    nixieNumber = body.number;
+});
 
 keyboard.on('keypress', (e) => {
     if (e.value === 1) {
@@ -34,13 +44,44 @@ keyboard.on('keypress', (e) => {
                 rp(`http://${config.hubitat.host}/apps/api/88/devices/8/close?access_token=${config.hubitat.access_token}`);
                 break;
             case 79:
-                console.log('7');
+
+                nixieNumber = nixieNumber - 1;
+                if (nixieNumber < 0) nixieNumber = 9;
+
+                rp({
+                    method: 'POST',
+                    uri: `http://nixie.smittn.com/number`,
+                    json: true,
+                    body: {
+                        number: nixieNumber
+                    }});
+                console.log('decrement nixie number');
                 break;
             case 80:
-                console.log('8');
+                nixieNumber = 0;
+                rp({
+                    method: 'POST',
+                    uri: `http://nixie.smittn.com/number`,
+                    json: true,
+                    body: {
+                        number: nixieNumber
+                    }});
+
+                console.log('set nixie number to 0');
                 break;
             case 81:
-                console.log('9');
+
+                nixieNumber = nixieNumber + 1;
+                if (nixieNumber > 9) nixieNumber = 0;
+
+                rp({
+                    method: 'POST',
+                    uri: `http://nixie.smittn.com/number`,
+                    json: true,
+                    body: {
+                        number: nixieNumber
+                    }});
+                console.log('increment nixie number');
                 break;
             case 82:
                 console.log('0');
