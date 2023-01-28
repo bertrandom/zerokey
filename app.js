@@ -6,32 +6,24 @@ const keyboard = new InputEvent.Keyboard(input);
 
 console.log('zerokey started');
 
-keyboard.on('keypress', (e) => {
+keyboard.on('keypress', async (e) => {
     if (e.value === 1) {
         switch (e.code) {
             case 2:
-                rp(`http://${config.hubitat.host}/apps/api/88/devices/36/setLevel/100?access_token=${config.hubitat.access_token}`);
-                console.log('turn on lights');
-                break;
-            case 3:
-                rp(`http://${config.hubitat.host}/apps/api/88/devices/36/setLevel/25?access_token=${config.hubitat.access_token}`);
-                console.log('set lights to 25%');
-                break;
-            case 4:
-                console.log('turn off lights');
-                rp(`http://${config.hubitat.host}/apps/api/88/devices/36/off?access_token=${config.hubitat.access_token}`);
-                break;
-            case 5:
-                console.log('open blinds');
-                rp(`http://${config.hubitat.host}/apps/api/88/devices/74/setLevel/100?access_token=${config.hubitat.access_token}`);
-                break;
-            case 6:
-                console.log('open blinds to 50%');
-                rp(`http://${config.hubitat.host}/apps/api/88/devices/74/setLevel/50?access_token=${config.hubitat.access_token}`);
-                break;
-            case 7:
-                console.log('close blinds');
-                rp(`http://${config.hubitat.host}/apps/api/88/devices/74/setLevel/0?access_token=${config.hubitat.access_token}`);
+
+                const response = await rp({
+                    uri: `http://${config.hubitat.host}/apps/api/88/devices/36?access_token=${config.hubitat.access_token}`,
+                    json: true
+                });
+
+                if (response && response.attributes[1]?.currentValue === 'on') {
+                    console.log('turn off lights');
+                    rp(`http://${config.hubitat.host}/apps/api/88/devices/36/off?access_token=${config.hubitat.access_token}`);
+                } else {
+                    console.log('turn on lights');
+                    rp(`http://${config.hubitat.host}/apps/api/88/devices/36/on?access_token=${config.hubitat.access_token}`);
+                }
+
                 break;
 
         }
