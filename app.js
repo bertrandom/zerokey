@@ -19,8 +19,8 @@ keyboard.on('keypress', (e) => {
                 exec("/usr/bin/ddcutil setvcp 60 0x0f");
                 break;
             case 4:
-                console.log('switching input to hdmi2');
-                exec("/usr/bin/ddcutil setvcp 60 0x12");
+                console.log('switching input to hdmi1');
+                exec("/usr/bin/ddcutil setvcp 60 0x11");
                 break;
         }
     }
