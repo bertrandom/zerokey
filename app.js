@@ -16,7 +16,7 @@ keyboard.on('keypress', async (e) => {
                     json: true
                 });
 
-                if (response && response.attributes[1]?.currentValue === 'on') {
+                if (response && (response.attributes[0]?.currentValue === 'on' || response.attributes[1]?.currentValue === 'on')) {
                     console.log('turn off lights');
                     rp(`http://${config.hubitat.host}/apps/api/88/devices/36/off?access_token=${config.hubitat.access_token}`);
                 } else {
