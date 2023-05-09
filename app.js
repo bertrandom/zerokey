@@ -42,12 +42,19 @@ keyboard.on('keypress', async (e) => {
                     }
                 }
 
-                if (levelAttribute && levelAttribute.currentValue === 100) {
-                    console.log('close blinds');
-                    rp(`http://${config.hubitat.host}/apps/api/88/devices/74/setLevel/0?access_token=${config.hubitat.access_token}`);
-                } else {
+                switchAttribute = null
+                for (let attribute of response.attributes) {
+                    if (attribute.name === 'switch') {
+                        switchAttribute = attribute;
+                    }
+                }
+
+                if (switchAttribute.currentValue == 'off') {
                     console.log('open blinds');
                     rp(`http://${config.hubitat.host}/apps/api/88/devices/74/setLevel/100?access_token=${config.hubitat.access_token}`);
+                } else {
+                    console.log('close blinds');
+                    rp(`http://${config.hubitat.host}/apps/api/88/devices/74/setLevel/0?access_token=${config.hubitat.access_token}`);
                 }
 
                 break;
