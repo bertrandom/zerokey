@@ -19,12 +19,32 @@ keyboard.on('keypress', async (e) => {
                     json: true
                 });
 
-                if (response && (response.attributes[0]?.currentValue === 'on' || response.attributes[1]?.currentValue === 'on')) {
-                    console.log('turn off main lights');
-                    rp(`http://${config.hubitat.host}/apps/api/88/devices/36/off?access_token=${config.hubitat.access_token}`);
+                levelAttribute = null
+                for (let attribute of response.attributes) {
+                    if (attribute.name === 'level') {
+                        levelAttribute = attribute;
+                    }
+                }
+
+                switchAttribute = null
+                for (let attribute of response.attributes) {
+                    if (attribute.name === 'switch') {
+                        switchAttribute = attribute;
+                    }
+                }
+
+                console.log('current level', levelAttribute);
+                console.log('current switch', switchAttribute);
+
+                if (switchAttribute.currentValue == 'off') {
+                    // rp(`http://${config.hubitat.host}/apps/api/88/devices/36/on?access_token=${config.hubitat.access_token}`);
+                    rp(`http://${config.hubitat.host}/apps/api/88/devices/36/setLevel/25?access_token=${config.hubitat.access_token}`);
                 } else {
-                    console.log('turn on main lights');
-                    rp(`http://${config.hubitat.host}/apps/api/88/devices/36/on?access_token=${config.hubitat.access_token}`);
+                    // if (levelAttribute.currentValue == 25) {
+                    //     rp(`http://${config.hubitat.host}/apps/api/88/devices/36/setLevel/100?access_token=${config.hubitat.access_token}`);
+                    // } else {
+                        rp(`http://${config.hubitat.host}/apps/api/88/devices/36/off?access_token=${config.hubitat.access_token}`);
+                    // }
                 }
 
                 break;
