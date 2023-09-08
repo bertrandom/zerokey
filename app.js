@@ -82,7 +82,7 @@ keyboard.on('keypress', async (e) => {
             case 4:
                 console.log('toggling egypt light');
                 response = await rp({
-                    uri: "http://homeassistant.smittn.com:8123/api/webhook/toggle-egypt-light-bZL3bzlROmU0QuF7Bmhns_Zl",
+                    uri: config.homeassistant.webhook1,
                     method: 'POST',
                 });
                 break;
