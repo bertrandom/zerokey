@@ -80,42 +80,25 @@ keyboard.on('keypress', async (e) => {
                 break;
 
             case 4:
+                console.log('toggling egypt light');
                 response = await rp({
-                    uri: `http://${config.hubitat.host}/apps/api/88/devices/110?access_token=${config.hubitat.access_token}`,
-                    json: true
+                    uri: "http://homeassistant.smittn.com:8123/api/webhook/toggle-egypt-light-bZL3bzlROmU0QuF7Bmhns_Zl",
+                    method: 'POST',
                 });
+                break;
 
-                levelAttribute = null;
-
-                if (response && response.attributes[0]?.name == 'level') {
-                    levelAttribute = response.attributes[0];
-                } else if (response && response.attributes[1]?.name == 'level') {
-                    levelAttribute = response.attributes[1];
-                }
-
-                console.log('current level', levelAttribute);
-
-                if (levelAttribute) {
-                    switch (levelAttribute.currentValue) {
-                        case 1:
-                        default:
-                            console.log('setting sconce to 50%');
-                            rp(`http://${config.hubitat.host}/apps/api/88/devices/110/setLevel/50?access_token=${config.hubitat.access_token}`);
-                            break;
-
-                        case 20:
-                            console.log('setting sconce to 1%');
-                            rp(`http://${config.hubitat.host}/apps/api/88/devices/110/setLevel/1?access_token=${config.hubitat.access_token}`);
-                            break;
-
-                        case 50:
-                            console.log('setting sconce to 20%');
-                            rp(`http://${config.hubitat.host}/apps/api/88/devices/110/setLevel/20?access_token=${config.hubitat.access_token}`);
-                            break;
-
-                    }
-                }
-
+            case 5:
+                console.log('setting sconce to 50%');
+                rp(`http://${config.hubitat.host}/apps/api/88/devices/110/setLevel/50?access_token=${config.hubitat.access_token}`);
+                break;
+            case 6:
+                console.log('setting sconce to 20%');
+                rp(`http://${config.hubitat.host}/apps/api/88/devices/110/setLevel/20?access_token=${config.hubitat.access_token}`);
+                break;
+            case 7:
+                console.log('setting sconce to 1%');
+                rp(`http://${config.hubitat.host}/apps/api/88/devices/110/setLevel/1?access_token=${config.hubitat.access_token}`);
+                break;
 
         }
     }
