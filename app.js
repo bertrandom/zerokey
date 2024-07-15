@@ -4,18 +4,22 @@ const config = require('config');
 const input = new InputEvent('/dev/input/event0');
 const keyboard = new InputEvent.Keyboard(input);
 
+const input2 = new InputEvent('/dev/input/event1');
+const keyboard2 = new InputEvent.Keyboard(input2);
+
 console.log('zerokey started');
 
 const os = require("os");
 const hostname = os.hostname();
 
-keyboard.on('keypress', async (e) => {
+const handleKeypress = async (e) => {
     if (e.value === 1) {
 
         if (!config.codes[e.code.toString()]) {
             console.log('unknown key', e.code);
             return;
         }
+
 
         key = config.codes[e.code.toString()]
 
@@ -34,4 +38,7 @@ keyboard.on('keypress', async (e) => {
         });
 
     }
-});
+}
+
+keyboard.on('keypress', handleKeypress);
+keyboard2.on('keypress', handleKeypress);
