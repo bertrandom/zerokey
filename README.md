@@ -24,7 +24,7 @@ export PATH=$PATH:/opt/nodejs/bin
 
 Start PM2 on reboot:
 ```
-sudo env PATH=$PATH:/opt/nodejs/bin /opt/nodejs/lib/node_modules/pm2/bin/pm2 startup systemd -u pi --hp /home/pi
+sudo env PATH=$PATH:/opt/nodejs/bin /opt/nodejs/lib/node_modules/pm2/bin/pm2 startup systemd -u $(whoami) --hp /home/$(whoami)
 ```
 
 Install dependencies:
